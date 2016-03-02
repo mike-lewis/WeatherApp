@@ -13,31 +13,38 @@ class ViewController: UIViewController {
     @IBOutlet weak var cityNameTextField: UITextView!
     @IBOutlet weak var cityTempLabel: UILabel!
     @IBOutlet weak var cityNameLabel: UILabel!
+    @IBOutlet weak var enterCity: UITextField!
     
-    @IBAction func getDataButton(sender: AnyObject) {
-        
+    // On button click, load weather data user entered in text field
+    @IBAction func getWeather(sender: AnyObject) {
+        // getWeatherData function takes in stringBuilder function, which takes a string that the user inputs
+        getWeatherData( stringBuilder( self.enterCity.text! ) )
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        getWeatherData("http://api.openweathermap.org/data/2.5/weather?q=Vancouver&APPID=a14927833ec1779e7ef2634dd07ae47e")
-        // Do any additional setup after loading the view, typically from a nib.
+        //getWeatherData("http://api.openweathermap.org/data/2.5/weather?q=Vancouver&APPID=a14927833ec1779e7ef2634dd07ae47e")
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
-    func getWeatherData(urlString: String) {
-        let url = NSURL(string: urlString)
+    // Builds the search string for openweathermap api
+    func stringBuilder(city: String) ->String {
+        let searchString = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
         
-        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, responce, error) in
-            dispatch_async(dispatch_get_main_queue(), {
-                self.setLabels(data!)
+        return searchString
+    }
+    
+    func getWeatherData(urlString: String) {
+        let url = NSURL( string: urlString )
+        
+        let task = NSURLSession.sharedSession().dataTaskWithURL( url! ) { ( data, responce, error ) in
+            dispatch_async( dispatch_get_main_queue(), {
+                self.setLabels( data! )
             })
         }
-        print("before resume")
         task.resume()
         
     }
@@ -48,22 +55,17 @@ class ViewController: UIViewController {
             let json = try NSJSONSerialization.JSONObjectWithData(weatherData, options: []) as! NSDictionary
             if let name = json["name"] as? String {
                 cityNameLabel.text = name
-                print(name)
             }
 
             if let main = json["main"] as? NSDictionary {
                 if let temp = main["temp"] as? Double {
-                    print(temp)
-                    cityTempLabel.text = String(format: "%.1f", temp)
-
+                    // To convert Kelvin to C, temp (K) - 273.15 = C
+                    cityTempLabel.text = String( format: "%.1f", temp - 273.15 )
                 }
             }
-            print("almost end")
         } catch {
-            //write error handling code here
-            print("catch block")
+            // error handling
         }
-        print("end")
   }
 
 }
