@@ -7,13 +7,19 @@
 //
 
 import UIKit
+import CoreLocation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, CLLocationManagerDelegate {
 
     @IBOutlet weak var cityNameTextField: UITextView!
     @IBOutlet weak var cityTempLabel: UILabel!
     @IBOutlet weak var cityNameLabel: UILabel!
     @IBOutlet weak var enterCity: UITextField!
+    @IBOutlet weak var currentLon: UILabel!
+    @IBOutlet weak var currentLat: UILabel!
+    
+    var locationManager: CLLocationManager = CLLocationManager()
+    var currentLocation: CLLocation!
     
     // On button click, load weather data user entered in text field
     @IBAction func getWeather(sender: AnyObject) {
@@ -24,10 +30,26 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //getWeatherData("http://api.openweathermap.org/data/2.5/weather?q=Vancouver&APPID=a14927833ec1779e7ef2634dd07ae47e")
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+        currentLocation = nil
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func locationManager(manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation])
+    {
+        let latestLocation: CLLocation = locationManager.location!
+        currentLat.text = String(format: "%.4f",
+            latestLocation.coordinate.latitude)
+        currentLon.text = String(format: "%.4f",
+            latestLocation.coordinate.longitude)
     }
 
     // Builds the search string for openweathermap api
