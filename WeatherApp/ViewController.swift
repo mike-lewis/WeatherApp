@@ -15,17 +15,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var cityTempLabel: UILabel!
     @IBOutlet weak var cityNameLabel: UILabel!
     @IBOutlet weak var enterCity: UITextField!
-    @IBOutlet weak var currentLon: UILabel!
-    @IBOutlet weak var currentLat: UILabel!
+    @IBOutlet weak var humidity: UILabel!
+    @IBOutlet weak var skyConditionsLabel: UILabel!
     
     var locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocation!
-    
-    // On button click, load weather data user entered in text field
-    @IBAction func getWeather(sender: AnyObject) {
-        // getWeatherData function takes in stringBuilder function, which takes a string that the user inputs
-        getWeatherData( stringBuilder( self.enterCity.text! ) )
-    }
+    var loadCurrentWeatherOnce = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,26 +30,41 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         currentLocation = nil
-        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
+    // On button click, load weather data user entered in text field
+    @IBAction func getWeather(sender: AnyObject) {
+        // getWeatherData function takes in stringBuilder function, which takes a string that the user inputs
+        getWeatherData( stringBuilderFromText( self.enterCity.text! ) )
+    }
+    
     func locationManager(manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation])
     {
-        let latestLocation: CLLocation = locationManager.location!
-        currentLat.text = String(format: "%.4f",
-            latestLocation.coordinate.latitude)
-        currentLon.text = String(format: "%.4f",
-            latestLocation.coordinate.longitude)
+        if (loadCurrentWeatherOnce) {
+            loadCurrentWeatherOnce = false
+            let latestLocation: CLLocation = locationManager.location!
+        
+            getWeatherData( stringBuilderFromGPS( latestLocation.coordinate.latitude, lon: latestLocation.coordinate.longitude ) )
+        }
     }
 
     // Builds the search string for openweathermap api
-    func stringBuilder(city: String) ->String {
+    // Takes a city name (string)
+    func stringBuilderFromText(city: String) ->String {
         let searchString = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
+
+        return searchString
+    }
+    
+    // Builds the search string for openweathermap api
+    // Takes a pair of gps coordinates, lat and lon (double)
+    func stringBuilderFromGPS(lat: Double, lon: Double) ->String {
+        let searchString = "http://api.openweathermap.org/data/2.5/weather?lat=" + String(lat) + "&lon=" + String(lon) + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
         
         return searchString
     }
@@ -84,7 +94,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                     // To convert Kelvin to C, temp (K) - 273.15 = C
                     cityTempLabel.text = String( format: "%.1f", temp - 273.15 )
                 }
+                
+                if let hum = main["humidity"] as? Double {
+                    humidity.text = String(hum)
+                }
             }
+            
+            if let weather = json["weather"] {
+                if var skyConditions = weather[0]["description"] as? String {
+                    // Strip off the extra text returned by the api
+                    skyConditions = skyConditions.stringByReplacingOccurrencesOfString("\"", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+                    
+                    skyConditionsLabel.text = skyConditions
+                }
+            }
+            
         } catch {
             // error handling
         }
