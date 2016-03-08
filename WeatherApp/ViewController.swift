@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var cityNameTextField: UITextView!
     @IBOutlet weak var cityTempLabel: UILabel!
@@ -30,6 +30,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         currentLocation = nil
+        
+        // Used for hiding keyboard
+        self.enterCity.delegate = self;
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,7 +59,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     // Builds the search string for openweathermap api
     // Takes a city name (string)
     func stringBuilderFromText(city: String) ->String {
-        let searchString = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
+        let trimmedString = city.stringByTrimmingCharactersInSet( NSCharacterSet.whitespaceAndNewlineCharacterSet() )
+        let searchString = "http://api.openweathermap.org/data/2.5/weather?q=" + trimmedString + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
 
         return searchString
     }
@@ -79,6 +83,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
         task.resume()
         
+    }
+    
+    // Used to hide keyboard once user hits enter
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
     
     func setLabels(weatherData: NSData) {
