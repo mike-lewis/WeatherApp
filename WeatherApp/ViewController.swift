@@ -24,14 +24,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITextFieldDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //getWeatherData("http://api.openweathermap.org/data/2.5/weather?q=Vancouver&APPID=a14927833ec1779e7ef2634dd07ae47e")
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         currentLocation = nil
         
-        // Used for hiding keyboard
+        // Hides keyboard
         self.enterCity.delegate = self;
     }
 
@@ -59,8 +58,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITextFieldDe
     // Builds the search string for openweathermap api
     // Takes a city name (string)
     func stringBuilderFromText(city: String) ->String {
+        // Trim leading and trailing whitespace from the string
         let trimmedString = city.stringByTrimmingCharactersInSet( NSCharacterSet.whitespaceAndNewlineCharacterSet() )
-        let searchString = "http://api.openweathermap.org/data/2.5/weather?q=" + trimmedString + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
+        // Trim white space from middle of strings, example "Las Vegas"
+        let noWhiteSpaceInString = trimmedString.stringByReplacingOccurrencesOfString(" ", withString: "")
+        // Finished search string for openweathermap api
+        let searchString = "http://api.openweathermap.org/data/2.5/weather?q=" + noWhiteSpaceInString + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
 
         return searchString
     }
@@ -68,6 +71,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITextFieldDe
     // Builds the search string for openweathermap api
     // Takes a pair of gps coordinates, lat and lon (double)
     func stringBuilderFromGPS(lat: Double, lon: Double) ->String {
+        // Search string with gps coordinates for openweathermap api
         let searchString = "http://api.openweathermap.org/data/2.5/weather?lat=" + String(lat) + "&lon=" + String(lon) + "&APPID=a14927833ec1779e7ef2634dd07ae47e"
         
         return searchString
