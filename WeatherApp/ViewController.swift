@@ -24,14 +24,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITextFieldDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        locationManager.startUpdatingLocation()
-        currentLocation = nil
-        
-        // Hides keyboard
-        self.enterCity.delegate = self;
+        // If there is an internet connection
+        if Reachability.isConnectedToNetwork() == true {
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.delegate = self
+            locationManager.requestAlwaysAuthorization()
+            locationManager.startUpdatingLocation()
+            currentLocation = nil
+            
+            // Hides keyboard
+            self.enterCity.delegate = self;
+            // If no internet connection, display alert
+        } else {
+            let alert = UIAlertView( title: "No Internet Connection", message: "Make sure your device is connected to the internet.", delegate: nil, cancelButtonTitle: "OK" )
+            alert.show()
+        }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,8 +48,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITextFieldDe
     
     // On button click, load weather data user entered in text field
     @IBAction func getWeather(sender: AnyObject) {
-        // getWeatherData function takes in stringBuilder function, which takes a string that the user inputs
-        getWeatherData( stringBuilderFromText( self.enterCity.text! ) )
+        // If there is an internet connection
+        if Reachability.isConnectedToNetwork() == true {
+            // getWeatherData function takes in stringBuilder function, which takes a string that the user inputs
+            getWeatherData( stringBuilderFromText( self.enterCity.text! ) )
+        } else {
+            let alert = UIAlertView( title: "No Internet Connection", message: "Make sure your device is connected to the internet.", delegate: nil, cancelButtonTitle: "OK" )
+            alert.show()
+        }
     }
     
     func locationManager(manager: CLLocationManager,

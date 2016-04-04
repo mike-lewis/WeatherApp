@@ -14,6 +14,7 @@
 		27D400371C72C73600C6B060 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27D400351C72C73600C6B060 /* LaunchScreen.storyboard */; };
 		27D400421C72C73600C6B060 /* WeatherAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D400411C72C73600C6B060 /* WeatherAppTests.swift */; };
 		27D4004D1C72C73600C6B060 /* WeatherAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D4004C1C72C73600C6B060 /* WeatherAppUITests.swift */; };
+		9C1DFF511CB1EAE5004789BE /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1DFF501CB1EAE5004789BE /* Reachability.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		27D400481C72C73600C6B060 /* WeatherAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		27D4004C1C72C73600C6B060 /* WeatherAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAppUITests.swift; sourceTree = "<group>"; };
 		27D4004E1C72C73600C6B060 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C1DFF501CB1EAE5004789BE /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				27D400331C72C73600C6B060 /* Assets.xcassets */,
 				27D400351C72C73600C6B060 /* LaunchScreen.storyboard */,
 				27D400381C72C73600C6B060 /* Info.plist */,
+				9C1DFF501CB1EAE5004789BE /* Reachability.swift */,
 			);
 			path = WeatherApp;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			files = (
 				27D4002F1C72C73600C6B060 /* ViewController.swift in Sources */,
 				27D4002D1C72C73600C6B060 /* AppDelegate.swift in Sources */,
+				9C1DFF511CB1EAE5004789BE /* Reachability.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
